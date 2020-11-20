@@ -1,0 +1,161 @@
+2020-10-29 15:09:13,499 - root - INFO - Log file is ../log/cifar10_test/log.txt.
+2020-10-29 15:09:13,499 - root - INFO - Data path is ../data.
+2020-10-29 15:09:13,499 - root - INFO - Export path is ../log/cifar10_test.
+2020-10-29 15:09:13,499 - root - INFO - Dataset: cifar10
+2020-10-29 15:09:13,499 - root - INFO - Normal class: 3
+2020-10-29 15:09:13,499 - root - INFO - Network: cifar10_LeNet
+2020-10-29 15:09:13,499 - root - INFO - Deep SVDD objective: one-class
+2020-10-29 15:09:13,499 - root - INFO - Nu-paramerter: 0.10
+2020-10-29 15:09:13,499 - root - INFO - Computation device: cpu
+2020-10-29 15:09:13,500 - root - INFO - Number of dataloader workers: 0
+2020-10-29 15:12:26,695 - root - INFO - Pretraining: True
+2020-10-29 15:12:26,696 - root - INFO - Pretraining optimizer: adam
+2020-10-29 15:12:26,696 - root - INFO - Pretraining learning rate: 0.0001
+2020-10-29 15:12:26,696 - root - INFO - Pretraining epochs: 350
+2020-10-29 15:12:26,696 - root - INFO - Pretraining learning rate scheduler milestones: (250,)
+2020-10-29 15:12:26,696 - root - INFO - Pretraining batch size: 200
+2020-10-29 15:12:26,696 - root - INFO - Pretraining weight decay: 5e-07
+2020-10-29 15:12:26,722 - root - INFO - Starting pretraining...
+2020-10-29 15:13:46,435 - root - INFO -   Epoch 1/350	 Time: 79.713	 Loss: 128.36574982
+2020-10-29 15:15:06,024 - root - INFO -   Epoch 2/350	 Time: 79.589	 Loss: 34.97905220
+2020-10-29 15:16:29,422 - root - INFO -   Epoch 3/350	 Time: 83.397	 Loss: 16.45676033
+2020-10-29 15:17:46,818 - root - INFO -   Epoch 4/350	 Time: 77.396	 Loss: 10.92527893
+2020-10-29 15:19:03,708 - root - INFO -   Epoch 5/350	 Time: 76.889	 Loss: 9.33621109
+2020-10-29 15:20:20,877 - root - INFO -   Epoch 6/350	 Time: 77.169	 Loss: 8.51212292
+2020-10-29 15:21:37,718 - root - INFO -   Epoch 7/350	 Time: 76.841	 Loss: 7.93565187
+2020-10-29 15:22:54,642 - root - INFO -   Epoch 8/350	 Time: 76.923	 Loss: 7.47375050
+2020-10-29 15:24:12,183 - root - INFO -   Epoch 9/350	 Time: 77.541	 Loss: 7.11621752
+2020-10-29 15:25:21,943 - root - INFO - Log file is ../log/cifar10_test/log.txt.
+2020-10-29 15:25:21,943 - root - INFO - Data path is ../data.
+2020-10-29 15:25:21,943 - root - INFO - Export path is ../log/cifar10_test.
+2020-10-29 15:25:21,943 - root - INFO - Dataset: cifar10
+2020-10-29 15:25:21,943 - root - INFO - Normal class: 3
+2020-10-29 15:25:21,943 - root - INFO - Network: cifar10_LeNet
+2020-10-29 15:25:21,943 - root - INFO - Deep SVDD objective: one-class
+2020-10-29 15:25:21,944 - root - INFO - Nu-paramerter: 0.10
+2020-10-29 15:25:21,944 - root - INFO - Computation device: cpu
+2020-10-29 15:25:21,944 - root - INFO - Number of dataloader workers: 0
+2020-10-29 15:25:23,291 - root - INFO - Pretraining: True
+2020-10-29 15:25:23,291 - root - INFO - Pretraining optimizer: adam
+2020-10-29 15:25:23,291 - root - INFO - Pretraining learning rate: 0.0001
+2020-10-29 15:25:23,291 - root - INFO - Pretraining epochs: 5
+2020-10-29 15:25:23,291 - root - INFO - Pretraining learning rate scheduler milestones: (250,)
+2020-10-29 15:25:23,291 - root - INFO - Pretraining batch size: 200
+2020-10-29 15:25:23,291 - root - INFO - Pretraining weight decay: 5e-07
+2020-10-29 15:25:23,306 - root - INFO - Starting pretraining...
+2020-10-29 15:26:39,887 - root - INFO -   Epoch 1/5	 Time: 76.581	 Loss: 83.76198921
+2020-10-29 15:27:56,634 - root - INFO -   Epoch 2/5	 Time: 76.747	 Loss: 17.34571884
+2020-10-29 15:29:13,191 - root - INFO -   Epoch 3/5	 Time: 76.556	 Loss: 12.01319939
+2020-10-29 15:30:29,909 - root - INFO -   Epoch 4/5	 Time: 76.718	 Loss: 10.34533211
+2020-10-29 15:31:46,455 - root - INFO -   Epoch 5/5	 Time: 76.546	 Loss: 9.28405743
+2020-10-29 15:31:46,456 - root - INFO - Pretraining time: 383.150
+2020-10-29 15:31:46,456 - root - INFO - Finished pretraining.
+2020-10-29 15:31:46,465 - root - INFO - Testing autoencoder...
+2020-10-29 15:32:44,042 - root - INFO - Test set Loss: 14.68416061
+2020-10-29 15:32:44,048 - root - INFO - Test set AUC: 61.50%
+2020-10-29 15:32:44,048 - root - INFO - Autoencoder testing time: 57.583
+2020-10-29 15:32:44,048 - root - INFO - Finished testing autoencoder.
+2020-10-29 15:32:44,073 - root - INFO - Training optimizer: adam
+2020-10-29 15:32:44,074 - root - INFO - Training learning rate: 0.0001
+2020-10-29 15:32:44,074 - root - INFO - Training epochs: 5
+2020-10-29 15:32:44,074 - root - INFO - Training learning rate scheduler milestones: (50,)
+2020-10-29 15:32:44,074 - root - INFO - Training batch size: 200
+2020-10-29 15:32:44,074 - root - INFO - Training weight decay: 5e-07
+2020-10-29 15:32:44,075 - root - INFO - Initializing center c...
+2020-10-29 15:32:55,206 - root - INFO - Center c initialized.
+2020-10-29 15:32:55,206 - root - INFO - Starting training...
+2020-10-29 15:33:26,362 - root - INFO -   Epoch 1/5	 Time: 31.155	 Loss: 10.63283589
+2020-10-29 15:33:57,414 - root - INFO -   Epoch 2/5	 Time: 31.052	 Loss: 1.11159483
+2020-10-29 15:34:28,727 - root - INFO -   Epoch 3/5	 Time: 31.313	 Loss: 0.71565485
+2020-10-29 15:34:59,870 - root - INFO -   Epoch 4/5	 Time: 31.143	 Loss: 0.55204227
+2020-10-29 15:35:31,138 - root - INFO -   Epoch 5/5	 Time: 31.267	 Loss: 0.45158290
+2020-10-29 15:35:31,138 - root - INFO - Training time: 155.932
+2020-10-29 15:35:31,138 - root - INFO - Finished training.
+2020-10-29 15:35:31,139 - root - INFO - Starting testing...
+2020-10-29 15:35:53,075 - root - INFO - Testing time: 21.936
+2020-10-29 15:35:53,082 - root - INFO - Test set AUC: 61.11%
+2020-10-29 15:35:53,082 - root - INFO - Finished testing.
+2020-11-03 17:06:29,966 - root - INFO - Log file is ../log/cifar10_test/log.txt.
+2020-11-03 17:06:29,984 - root - INFO - Data path is ../data.
+2020-11-03 17:06:29,985 - root - INFO - Export path is ../log/cifar10_test.
+2020-11-03 17:06:29,986 - root - INFO - Dataset: cifar10
+2020-11-03 17:06:29,986 - root - INFO - Normal class: 3
+2020-11-03 17:06:29,987 - root - INFO - Network: cifar10_LeNet
+2020-11-03 17:06:29,988 - root - INFO - Deep SVDD objective: one-class
+2020-11-03 17:06:29,988 - root - INFO - Nu-paramerter: 0.10
+2020-11-03 17:06:29,989 - root - INFO - Computation device: cpu
+2020-11-03 17:06:29,990 - root - INFO - Number of dataloader workers: 0
+2020-11-03 17:06:33,781 - root - INFO - Pretraining: True
+2020-11-03 17:06:33,783 - root - INFO - Pretraining optimizer: adam
+2020-11-03 17:06:33,784 - root - INFO - Pretraining learning rate: 0.0001
+2020-11-03 17:06:33,785 - root - INFO - Pretraining epochs: 350
+2020-11-03 17:06:33,786 - root - INFO - Pretraining learning rate scheduler milestones: (250,)
+2020-11-03 17:06:33,787 - root - INFO - Pretraining batch size: 200
+2020-11-03 17:06:33,791 - root - INFO - Pretraining weight decay: 5e-07
+2020-11-03 17:06:33,822 - root - INFO - Starting pretraining...
+2020-11-03 17:07:52,608 - root - INFO - Log file is ../log/cifar10_test/log.txt.
+2020-11-03 17:07:52,608 - root - INFO - Log file is ../log/cifar10_test/log.txt.
+2020-11-03 17:07:52,611 - root - INFO - Data path is ../data.
+2020-11-03 17:07:52,611 - root - INFO - Data path is ../data.
+2020-11-03 17:07:52,614 - root - INFO - Export path is ../log/cifar10_test.
+2020-11-03 17:07:52,614 - root - INFO - Export path is ../log/cifar10_test.
+2020-11-03 17:07:52,616 - root - INFO - Dataset: cifar10
+2020-11-03 17:07:52,616 - root - INFO - Dataset: cifar10
+2020-11-03 17:07:52,619 - root - INFO - Normal class: 3
+2020-11-03 17:07:52,619 - root - INFO - Normal class: 3
+2020-11-03 17:07:52,621 - root - INFO - Network: cifar10_LeNet
+2020-11-03 17:07:52,621 - root - INFO - Network: cifar10_LeNet
+2020-11-03 17:07:52,622 - root - INFO - Deep SVDD objective: one-class
+2020-11-03 17:07:52,622 - root - INFO - Deep SVDD objective: one-class
+2020-11-03 17:07:52,625 - root - INFO - Nu-paramerter: 0.10
+2020-11-03 17:07:52,625 - root - INFO - Nu-paramerter: 0.10
+2020-11-03 17:07:52,626 - root - INFO - Computation device: cpu
+2020-11-03 17:07:52,626 - root - INFO - Computation device: cpu
+2020-11-03 17:07:52,628 - root - INFO - Number of dataloader workers: 0
+2020-11-03 17:07:52,628 - root - INFO - Number of dataloader workers: 0
+2020-11-03 17:09:37,715 - root - INFO - Log file is ../log/cifar10_test/log.txt.
+2020-11-03 17:09:37,717 - root - INFO - Data path is ../data.
+2020-11-03 17:09:37,719 - root - INFO - Export path is ../log/cifar10_test.
+2020-11-03 17:09:37,721 - root - INFO - Dataset: cifar10
+2020-11-03 17:09:37,723 - root - INFO - Normal class: 3
+2020-11-03 17:09:37,725 - root - INFO - Network: cifar10_LeNet
+2020-11-03 17:09:37,727 - root - INFO - Deep SVDD objective: one-class
+2020-11-03 17:09:37,729 - root - INFO - Nu-paramerter: 0.10
+2020-11-03 17:09:37,731 - root - INFO - Computation device: cpu
+2020-11-03 17:09:37,734 - root - INFO - Number of dataloader workers: 0
+2020-11-03 17:11:00,765 - root - INFO - Log file is ../log/cifar10_test/log.txt.
+2020-11-03 17:11:00,765 - root - INFO - Log file is ../log/cifar10_test/log.txt.
+2020-11-03 17:11:00,767 - root - INFO - Data path is ../data.
+2020-11-03 17:11:00,767 - root - INFO - Data path is ../data.
+2020-11-03 17:11:00,769 - root - INFO - Export path is ../log/cifar10_test.
+2020-11-03 17:11:00,769 - root - INFO - Export path is ../log/cifar10_test.
+2020-11-03 17:11:00,770 - root - INFO - Dataset: cifar10
+2020-11-03 17:11:00,770 - root - INFO - Dataset: cifar10
+2020-11-03 17:11:00,771 - root - INFO - Normal class: 3
+2020-11-03 17:11:00,771 - root - INFO - Normal class: 3
+2020-11-03 17:11:00,774 - root - INFO - Network: cifar10_LeNet
+2020-11-03 17:11:00,774 - root - INFO - Network: cifar10_LeNet
+2020-11-03 17:11:00,775 - root - INFO - Deep SVDD objective: one-class
+2020-11-03 17:11:00,775 - root - INFO - Deep SVDD objective: one-class
+2020-11-03 17:11:00,778 - root - INFO - Nu-paramerter: 0.10
+2020-11-03 17:11:00,778 - root - INFO - Nu-paramerter: 0.10
+2020-11-03 17:11:00,780 - root - INFO - Computation device: cpu
+2020-11-03 17:11:00,780 - root - INFO - Computation device: cpu
+2020-11-03 17:11:00,783 - root - INFO - Number of dataloader workers: 0
+2020-11-03 17:11:00,783 - root - INFO - Number of dataloader workers: 0
+2020-11-03 17:11:02,116 - root - INFO - Pretraining: True
+2020-11-03 17:11:02,116 - root - INFO - Pretraining: True
+2020-11-03 17:11:02,119 - root - INFO - Pretraining optimizer: adam
+2020-11-03 17:11:02,119 - root - INFO - Pretraining optimizer: adam
+2020-11-03 17:11:02,122 - root - INFO - Pretraining learning rate: 0.0001
+2020-11-03 17:11:02,122 - root - INFO - Pretraining learning rate: 0.0001
+2020-11-03 17:11:02,123 - root - INFO - Pretraining epochs: 350
+2020-11-03 17:11:02,123 - root - INFO - Pretraining epochs: 350
+2020-11-03 17:11:02,126 - root - INFO - Pretraining learning rate scheduler milestones: (250,)
+2020-11-03 17:11:02,126 - root - INFO - Pretraining learning rate scheduler milestones: (250,)
+2020-11-03 17:11:02,128 - root - INFO - Pretraining batch size: 200
+2020-11-03 17:11:02,128 - root - INFO - Pretraining batch size: 200
+2020-11-03 17:11:02,130 - root - INFO - Pretraining weight decay: 5e-07
+2020-11-03 17:11:02,130 - root - INFO - Pretraining weight decay: 5e-07
+2020-11-03 17:11:02,158 - root - INFO - Starting pretraining...
+2020-11-03 17:11:02,158 - root - INFO - Starting pretraining...
