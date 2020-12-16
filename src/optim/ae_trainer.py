@@ -8,6 +8,7 @@ import time
 import torch
 import torch.optim as optim
 import numpy as np
+import copy
 
 
 class AETrainer(BaseTrainer):
@@ -26,6 +27,10 @@ class AETrainer(BaseTrainer):
         # Get train data loader
         train_loader, _ = dataset.loaders(batch_size=self.batch_size, num_workers=self.n_jobs_dataloader)
 
+        if hasattr(dataset, "validation_set"):
+            validation_loader = dataset.val_loader(batch_size=self.batch_size, num_workers=self.n_jobs_dataloader)
+            best_auc = 0
+            
         # Set optimizer (Adam optimizer for now)
         optimizer = optim.Adam(ae_net.parameters(), lr=self.lr, weight_decay=self.weight_decay,
                                amsgrad=self.optimizer_name == 'amsgrad')
@@ -36,13 +41,10 @@ class AETrainer(BaseTrainer):
         # Training
         logger.info('Starting pretraining...')
         start_time = time.time()
-        ae_net.train()
+        
         for epoch in range(self.n_epochs):
-
-            scheduler.step()
-            if epoch in self.lr_milestones:
-                logger.info('  LR scheduler: new learning rate is %g' % float(scheduler.get_lr()[0]))
-
+            
+            ae_net.train()
             loss_epoch = 0.0
             n_batches = 0
             epoch_start_time = time.time()
@@ -68,8 +70,51 @@ class AETrainer(BaseTrainer):
             logger.info('  Epoch {}/{}\t Time: {:.3f}\t Loss: {:.8f}'
                         .format(epoch + 1, self.n_epochs, epoch_train_time, loss_epoch / n_batches))
 
+            # validation
+            if hasattr(dataset, "validation_set"):
+                val_start_time = time.time()
+                idx_label_score = []
+                ae_net.eval()
+                with torch.no_grad():
+                    for data in validation_loader:
+                        inputs, labels, idx = data
+                        inputs = inputs.to(self.device)
+            
+                        outputs = ae_net(inputs)
+                        scores = torch.sum((outputs - inputs) ** 2, dim=tuple(range(1, outputs.dim())))
+                        loss = torch.mean(scores)
+                        idx_label_score += list(zip(idx.cpu().data.numpy().tolist(),
+                                                    labels.cpu().data.numpy().tolist(),
+                                                    scores.cpu().data.numpy().tolist()))
+
+                val_train_time = time.time() - val_start_time
+                _, labels, scores = zip(*idx_label_score)
+                labels = np.array(labels)
+                scores = np.array(scores)
+
+                val_auc = roc_auc_score(labels, scores)
+                # if get better results save it
+                if val_auc > best_auc:
+                    ae_net_dict = copy.deepcopy(ae_net.state_dict())
+                    best_auc = val_auc
+                    ep = epoch + 1
+                    
+                # log epoch statistics
+                logger.info('  Epoch {}/{}\t Time: {:.3f}\t AUC on val_dataset: {:.2f}'
+                        .format(epoch + 1, self.n_epochs, val_train_time, val_auc*100.))
+            scheduler.step()
+            if epoch+1 in self.lr_milestones:
+                logger.info('  LR scheduler: new learning rate is %g' % float(scheduler.get_lr()[0]))
+
         pretrain_time = time.time() - start_time
         logger.info('Pretraining time: %.3f' % pretrain_time)
+        
+        if hasattr(dataset, "validation_set"):
+            logger.info('Restore best weights from Epoch {}/{} AUC: {:.2f}'.format(ep,self.n_epochs,best_auc*100.))
+            state_dict = ae_net.state_dict()
+            state_dict.update(ae_net_dict)
+            ae_net.load_state_dict(state_dict)
+            
         logger.info('Finished pretraining.')
 
         return ae_net

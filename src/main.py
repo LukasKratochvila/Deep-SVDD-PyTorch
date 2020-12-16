@@ -14,8 +14,11 @@ from datasets.main import load_dataset
 # Settings
 ################################################################################
 @click.command()
-@click.argument('dataset_name', type=click.Choice(['mnist', 'cifar10','mydata']))
-@click.argument('net_name', type=click.Choice(['mnist_LeNet', 'cifar10_LeNet', 'cifar10_LeNet_ELU', 'my_LeNet']))
+@click.argument('dataset_name', type=click.Choice(['mnist', 'cifar10','mydata100', 'mydata300',
+                                                   'mydata100HRes', 'mydata300HRes','mydata100HRes_480',
+                                                   'mydata300HRes_480','bee']))
+@click.argument('net_name', type=click.Choice(['mnist_LeNet', 'cifar10_LeNet', 'cifar10_LeNet_ELU',
+                                               'my_LeNet', 'my_LeNet_480']))
 @click.argument('xp_path', type=click.Path(exists=True))
 @click.argument('data_path', type=click.Path(exists=True))
 @click.option('--load_config', type=click.Path(exists=True), default=None,
@@ -102,6 +105,9 @@ def main(dataset_name, net_name, xp_path, data_path, load_config, load_model, ob
         random.seed(cfg.settings['seed'])
         np.random.seed(cfg.settings['seed'])
         torch.manual_seed(cfg.settings['seed'])
+        # for torch 1.4.0
+        torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.deterministic = True
         logger.info('Set seed to %d.' % cfg.settings['seed'])
 
     # Default device to 'cpu' if cuda is not available
@@ -169,7 +175,7 @@ def main(dataset_name, net_name, xp_path, data_path, load_config, load_model, ob
     indices, labels, scores = np.array(indices), np.array(labels), np.array(scores)
     idx_sorted = indices[labels == 0][np.argsort(scores[labels == 0])]  # sorted from lowest to highest anomaly score
 
-    if dataset_name in ('mnist', 'cifar10', 'mydata'):
+    if dataset_name in ('mnist', 'cifar10', 'mydata100', 'mydata300', 'mydata100HRes', 'mydata300HRes','bee'):
 
         if dataset_name == 'mnist':
             X_normals = dataset.test_set.test_data[idx_sorted[:32], ...].unsqueeze(1)
@@ -179,9 +185,13 @@ def main(dataset_name, net_name, xp_path, data_path, load_config, load_model, ob
             X_normals = torch.tensor(np.transpose(dataset.test_set.test_data[idx_sorted[:32], ...], (0, 3, 1, 2)))
             X_outliers = torch.tensor(np.transpose(dataset.test_set.test_data[idx_sorted[-32:], ...], (0, 3, 1, 2)))
         
-        if dataset_name == 'mydata':
-            X_normals = torch.tensor(np.transpose(dataset.test_set.test_data[idx_sorted[:8], ...], (0, 3, 1, 2)))
-            X_outliers = torch.tensor(np.transpose(dataset.test_set.test_data[idx_sorted[-8:], ...], (0, 3, 1, 2)))
+        if dataset_name in ('mydata100', 'mydata300', 'mydata100HRes', 'mydata300HRes'):
+            X_normals = torch.tensor(np.transpose(dataset.test_set.test_data[idx_sorted[:32], ...], (0, 3, 1, 2)))
+            X_outliers = torch.tensor(np.transpose(dataset.test_set.test_data[idx_sorted[-32:], ...], (0, 3, 1, 2)))
+
+        if dataset_name == 'bee':
+            X_normals = torch.tensor(np.transpose(dataset.test_set.test_data[idx_sorted[:], ...], (0, 3, 1, 2)))
+            X_outliers = torch.tensor(np.transpose(dataset.test_set.test_data[idx_sorted[:], ...], (0, 3, 1, 2)))
 
         plot_images_grid(X_normals, export_img=xp_path + '/normals', title='Most normal examples', padding=2)
         plot_images_grid(X_outliers, export_img=xp_path + '/outliers', title='Most anomalous examples', padding=2)
@@ -190,6 +200,8 @@ def main(dataset_name, net_name, xp_path, data_path, load_config, load_model, ob
     deep_SVDD.save_results(export_json=xp_path + '/results.json')
     deep_SVDD.save_model(export_model=xp_path + '/model.tar',save_ae=pretrain)
     cfg.save_config(export_json=xp_path + '/config.json')
+    logging.shutdown()
+    logger.handlers.clear()
 
 
 if __name__ == '__main__':

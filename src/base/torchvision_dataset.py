@@ -15,3 +15,7 @@ class TorchvisionDataset(BaseADDataset):
         test_loader = DataLoader(dataset=self.test_set, batch_size=batch_size, shuffle=shuffle_test,
                                  num_workers=num_workers)
         return train_loader, test_loader
+    def val_loader(self, batch_size: int, shuffle_train=True, shuffle_test=False, num_workers: int = 0) -> (
+            DataLoader, DataLoader):
+        return DataLoader(dataset=self.validation_set, batch_size=batch_size, shuffle=shuffle_test,
+                                  num_workers=num_workers)

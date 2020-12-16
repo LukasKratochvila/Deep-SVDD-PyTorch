@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Nov  3 13:55:30 2020
+Created on Tue Dec  1 21:34:00 2020
 
-@author: kratochvila
+@author: pc-neuron
 """
 from PIL import Image
 import os
@@ -24,25 +24,29 @@ from torch.utils.data import Subset
 
 import numpy as np
 
-class MYDATA_Dataset(TorchvisionDataset):
+class BEE_Dataset(TorchvisionDataset):
 
-    def __init__(self, root: str, normal_class: int, version: int, Res: int = 32,
-                 validation: bool = False):
+    def __init__(self, root: str, normal_class: int, Res: int = 32, validation: bool = True):
         super().__init__(root)
 
         self.n_classes = 2 # 0: normal, 1: outlier
         self.normal_classes = tuple([normal_class])
-        self.outlier_classes = list(range(1, 5))
+        self.outlier_classes = list(range(1, 3))
         self.outlier_classes.remove(normal_class)
 
         # Pre-computed min and max values (after applying GCN) from train data per class
-        min_max = [(-1.3942, 6.5378),
-                   (-1.9069, 18.5352),
-                   (-2.6035, 29.8313),
-                   (-2.3845, 12.4581)]
+        ## v1
+        # min_max = [(-4.4759, 4.2062),
+        #            (-5.8208, 6.7592)]
+        ## v2
+        min_max = [(-9.1170, 6.5444),
+                    (-5.8077, 5.9404)]
+        ## v2 crop
+        min_max = [(-4.3988, 7.2110),
+                    (-3,4000, 5.7909)]
+        # For all bees for one class
         
-        # For 1225 Industry biscuits base for one class
-        
+        # transform = transforms.Compose(trans[1:] if Res == 0 else trans[:-1])
         # target_transform=transforms.Lambda(lambda x: x)
         # test=list(dataset.test_set)
         # train=list(dataset.train_set)
@@ -61,19 +65,19 @@ class MYDATA_Dataset(TorchvisionDataset):
 
         target_transform = transforms.Lambda(lambda x: int(x in self.outlier_classes))
 
-        train_set = MyData(root=self.root, train=True, version=version,
+        train_set = BEEData(root=self.root, train=True,
                               transform=transform, target_transform=target_transform)
         # Subset train set to normal class
         train_idx_normal = get_target_label_idx(train_set.train_labels, self.normal_classes)
         self.train_set = Subset(train_set, train_idx_normal)
 
-        self.test_set = MyData(root=self.root, train=False, version=version,
+        self.test_set = BEEData(root=self.root, train=False,
                                   transform=transform, target_transform=target_transform)
         if validation:
-            self.validation_set = MyData(root=self.root, train=False, version=version,
-                                         transform=transform, target_transform=target_transform,validation=True)
+            self.validation_set = BEEData(root=self.root, train=False, transform=transform,
+                                          target_transform=target_transform, validation=True)
         
-class MyData(data.Dataset):
+class BEEData(data.Dataset):
     """`MyData Dataset.
 
     Args:
@@ -85,23 +89,20 @@ class MyData(data.Dataset):
             and returns a transformed version. E.g, ``transforms.RandomCrop``
         target_transform (callable, optional): A function/transform that takes in the
             target and transforms it.
-        version (int, optional): Version of dataset, Possible ``100`` or ``300``, default 100.
-
     """
-    base_folder_list = ['100-batches-py','300-batches-py']
-    version_list = [100, 300]
-    base_folder = None
+
+    base_folder = 'bee-batches-v2-py' # v2: 'bee-batches-v2-py' # v1: 'bee-batches-py' 'bee-batches-v2-crop-py' 'bee-9-12-batches-py'
     train_list = None
     test_list = None
 
-    def __init__(self, root, train=True, version=100,
+    def __init__(self, root, train=True,
                  transform=None, target_transform=None, validation=False):
         self.root = os.path.expanduser(root)
         self.transform = transform
         self.target_transform = target_transform
         self.train = train  # training set or test set
         
-        self._load_hashes(version)
+        self._load_hashes()
 
         if not self._check_integrity():
             raise RuntimeError('Dataset not found or corrupted.' +
@@ -144,14 +145,10 @@ class MyData(data.Dataset):
                 self.test_labels = entry['fine_labels']
             fo.close()
             if validation:
-                self.test_data = np.concatenate((self.test_data[self.test_labels == 1][:100],
-                                                self.test_data[self.test_labels == 2][:100],
-                                                self.test_data[self.test_labels == 3][:100],
-                                                self.test_data[self.test_labels == 4][:100]),axis=0)
-                self.test_labels = np.concatenate((self.test_labels[self.test_labels == 1][:100],
-                                                self.test_labels[self.test_labels == 2][:100],
-                                                self.test_labels[self.test_labels == 3][:100],
-                                                self.test_labels[self.test_labels == 4][:100]),axis=0)
+                self.test_data = np.concatenate((self.test_data[self.test_labels == 1][:],
+                                                self.test_data[self.test_labels == 2][:]),axis=0)
+                self.test_labels = np.concatenate((self.test_labels[self.test_labels == 1][:],
+                                                self.test_labels[self.test_labels == 2][:]),axis=0)
 
     def __getitem__(self, index):
         """
@@ -193,9 +190,7 @@ class MyData(data.Dataset):
                 return False
         return True
 
-    def _load_hashes(self, version):
-        assert version in self.version_list, "Wrong version of dataset (100 or 300)"
-        self.base_folder = self.base_folder_list[self.version_list.index(version)]
+    def _load_hashes(self):
         root = self.root
         if self.train_list == None:
             hashes_file=os.path.join(root, self.base_folder, 'hashes.json')

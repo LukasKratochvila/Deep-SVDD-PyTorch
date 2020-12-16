@@ -9,6 +9,7 @@ import time
 import torch
 import torch.optim as optim
 import numpy as np
+import copy
 
 
 class DeepSVDDTrainer(BaseTrainer):
@@ -45,6 +46,10 @@ class DeepSVDDTrainer(BaseTrainer):
         # Get train data loader
         train_loader, _ = dataset.loaders(batch_size=self.batch_size, num_workers=self.n_jobs_dataloader)
 
+        if hasattr(dataset, "validation_set"):
+            validation_loader = dataset.val_loader(batch_size=self.batch_size, num_workers=self.n_jobs_dataloader)
+            best_auc = 0
+            
         # Set optimizer (Adam optimizer for now)
         optimizer = optim.Adam(net.parameters(), lr=self.lr, weight_decay=self.weight_decay,
                                amsgrad=self.optimizer_name == 'amsgrad')
@@ -61,13 +66,9 @@ class DeepSVDDTrainer(BaseTrainer):
         # Training
         logger.info('Starting training...')
         start_time = time.time()
-        net.train()
+        
         for epoch in range(self.n_epochs):
-
-            scheduler.step()
-            if epoch in self.lr_milestones:
-                logger.info('  LR scheduler: new learning rate is %g' % float(scheduler.get_lr()[0]))
-
+            net.train()
             loss_epoch = 0.0
             n_batches = 0
             epoch_start_time = time.time()
@@ -100,10 +101,57 @@ class DeepSVDDTrainer(BaseTrainer):
             epoch_train_time = time.time() - epoch_start_time
             logger.info('  Epoch {}/{}\t Time: {:.3f}\t Loss: {:.8f}'
                         .format(epoch + 1, self.n_epochs, epoch_train_time, loss_epoch / n_batches))
+            
+            # validation
+            if hasattr(dataset, "validation_set"):
+                val_start_time = time.time()
+                idx_label_score = []
+                net.eval()
+                with torch.no_grad():
+                    for data in validation_loader:
+                        inputs, labels, idx = data
+                        inputs = inputs.to(self.device)
+            
+                        outputs = net(inputs)
+                        dist = torch.sum((outputs - self.c) ** 2, dim=1)
+                        if self.objective == 'soft-boundary':
+                            scores = dist - self.R ** 2
+                        else:
+                            scores = dist
+                        idx_label_score += list(zip(idx.cpu().data.numpy().tolist(),
+                                                    labels.cpu().data.numpy().tolist(),
+                                                    scores.cpu().data.numpy().tolist()))
+
+                val_train_time = time.time() - val_start_time
+                _, labels, scores = zip(*idx_label_score)
+                labels = np.array(labels)
+                scores = np.array(scores)
+
+                val_auc = roc_auc_score(labels, scores)
+                # if get better results save it
+                if val_auc > best_auc:
+                    net_dict = copy.deepcopy(net.state_dict())
+                    best_auc = val_auc
+                    ep = epoch + 1
+        
+                # log epoch statistics
+                logger.info('  Epoch {}/{}\t Time: {:.3f}\t AUC on val_dataset: {:.2f}'
+                        .format(epoch + 1, self.n_epochs, val_train_time, val_auc*100.))
+            
+            # lr scheduler
+            scheduler.step()
+            if epoch+1 in self.lr_milestones:
+                logger.info('  LR scheduler: new learning rate is %g' % float(scheduler.get_lr()[0]))
 
         self.train_time = time.time() - start_time
         logger.info('Training time: %.3f' % self.train_time)
-
+        
+        if hasattr(dataset, "validation_set"):
+            logger.info('Restore best weights from Epoch {}/{} AUC: {:.2f}'.format(ep,self.n_epochs,best_auc*100.))
+            state_dict = net.state_dict()
+            state_dict.update(net_dict)
+            net.load_state_dict(state_dict)
+        
         logger.info('Finished training.')
 
         return net
