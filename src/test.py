@@ -22,8 +22,8 @@ from tabulate import tabulate
 from sklearn.metrics.ranking import roc_curve
 import matplotlib.pyplot as plt
 
-xp_path="../log/bee_v2"
-dataset_name = 'bee'
+xp_path="../log/v3/mydata_300_HRes_480_one_val_fine"
+dataset_name = 'mydata100HRes_480'
 
 load_config=os.path.join(xp_path,"config.json")
 load_model="/model.tar"

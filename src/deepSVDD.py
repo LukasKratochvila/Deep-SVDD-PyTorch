@@ -28,7 +28,7 @@ class DeepSVDD(object):
     def __init__(self, objective: str = 'one-class', nu: float = 0.1):
         """Inits DeepSVDD with one of the two objectives and hyperparameter nu."""
 
-        assert objective in ('one-class', 'soft-boundary'), "Objective must be either 'one-class' or 'soft-boundary'."
+        assert objective in ('one-class', 'soft-boundary', 'NN'), "Objective must be either 'one-class' or 'soft-boundary'."
         self.objective = objective
         assert (0 < nu) & (nu <= 1), "For hyperparameter nu, it must hold: 0 < nu <= 1."
         self.nu = nu

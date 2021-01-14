@@ -20,7 +20,7 @@ class DeepSVDDTrainer(BaseTrainer):
         super().__init__(optimizer_name, lr, n_epochs, lr_milestones, batch_size, weight_decay, device,
                          n_jobs_dataloader)
 
-        assert objective in ('one-class', 'soft-boundary'), "Objective must be either 'one-class' or 'soft-boundary'."
+        assert objective in ('one-class', 'soft-boundary', 'NN'), "Objective must be either 'one-class' or 'soft-boundary'."
         self.objective = objective
 
         # Deep SVDD parameters
@@ -73,8 +73,9 @@ class DeepSVDDTrainer(BaseTrainer):
             n_batches = 0
             epoch_start_time = time.time()
             for data in train_loader:
-                inputs, _, _ = data
+                inputs, labels, _ = data
                 inputs = inputs.to(self.device)
+                labels = labels.to(self.device)
 
                 # Zero the network parameter gradients
                 optimizer.zero_grad()
@@ -85,6 +86,8 @@ class DeepSVDDTrainer(BaseTrainer):
                 if self.objective == 'soft-boundary':
                     scores = dist - self.R ** 2
                     loss = self.R ** 2 + (1 / self.nu) * torch.mean(torch.max(torch.zeros_like(scores), scores))
+                elif self.objective == 'NN':
+                    loss = torch.mean(abs(labels - outputs[..., 0]))
                 else:
                     loss = torch.mean(dist)
                 loss.backward()
@@ -111,11 +114,14 @@ class DeepSVDDTrainer(BaseTrainer):
                     for data in validation_loader:
                         inputs, labels, idx = data
                         inputs = inputs.to(self.device)
+                        labels = labels.to(self.device)
             
                         outputs = net(inputs)
                         dist = torch.sum((outputs - self.c) ** 2, dim=1)
                         if self.objective == 'soft-boundary':
                             scores = dist - self.R ** 2
+                        elif self.objective == 'NN':
+                            scores = outputs[..., 0]
                         else:
                             scores = dist
                         idx_label_score += list(zip(idx.cpu().data.numpy().tolist(),
@@ -174,10 +180,14 @@ class DeepSVDDTrainer(BaseTrainer):
             for data in test_loader:
                 inputs, labels, idx = data
                 inputs = inputs.to(self.device)
+                labels = labels.to(self.device)
+                
                 outputs = net(inputs)
                 dist = torch.sum((outputs - self.c) ** 2, dim=1)
                 if self.objective == 'soft-boundary':
                     scores = dist - self.R ** 2
+                elif self.objective == 'NN':
+                    scores = outputs[..., 0]
                 else:
                     scores = dist
 

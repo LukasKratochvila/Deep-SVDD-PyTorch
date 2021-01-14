@@ -20,7 +20,7 @@ def load_dataset(dataset_name, data_path, normal_class):
         dataset = CIFAR10_Dataset(root=data_path, normal_class=normal_class)
         
     if dataset_name == 'mydata100':
-        dataset = MYDATA_Dataset(root=data_path, normal_class=normal_class, version=100)
+        dataset = MYDATA_Dataset(root=data_path, normal_class=normal_class, version=100, validation=True)
     
     if dataset_name == 'mydata300':
         dataset = MYDATA_Dataset(root=data_path, normal_class=normal_class, version=300)

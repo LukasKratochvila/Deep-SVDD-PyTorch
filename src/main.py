@@ -18,14 +18,14 @@ from datasets.main import load_dataset
                                                    'mydata100HRes', 'mydata300HRes','mydata100HRes_480',
                                                    'mydata300HRes_480','bee']))
 @click.argument('net_name', type=click.Choice(['mnist_LeNet', 'cifar10_LeNet', 'cifar10_LeNet_ELU',
-                                               'my_LeNet', 'my_LeNet_480']))
+                                               'my_LeNet', 'my_LeNet_480', 'my_LeNet_NN']))
 @click.argument('xp_path', type=click.Path(exists=True))
 @click.argument('data_path', type=click.Path(exists=True))
 @click.option('--load_config', type=click.Path(exists=True), default=None,
               help='Config JSON-file path (default: None).')
 @click.option('--load_model', type=click.Path(exists=True), default=None,
               help='Model file path (default: None).')
-@click.option('--objective', type=click.Choice(['one-class', 'soft-boundary']), default='one-class',
+@click.option('--objective', type=click.Choice(['one-class', 'soft-boundary', 'NN']), default='one-class',
               help='Specify Deep SVDD objective ("one-class" or "soft-boundary").')
 @click.option('--nu', type=float, default=0.1, help='Deep SVDD hyperparameter nu (must be 0 < nu <= 1).')
 @click.option('--device', type=str, default='cuda', help='Computation device to use ("cpu", "cuda", "cuda:2", etc.).')
